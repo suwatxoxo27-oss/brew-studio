@@ -65,7 +65,7 @@
 .staff-search-wrap { padding: 16px 20px 0; }
 .search-box--staff { background: #fff; border: 1.5px solid #EDE6D8; border-radius: var(--r-md); padding: 12px 14px; }
 .search-box--staff:focus-within { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(212,162,78,.08); }
-.search-box--staff input { color: #1A1410; }
+.search-box--staff input { color: #1A1410; border: none; outline: none; background: transparent; }
 .search-box--staff input::placeholder { color: #C4BAA8; }
 
 /* ── Category Chips ── */
