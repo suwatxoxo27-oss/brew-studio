@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brew Studio — Preview</title>
+<title>Brew Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -17,25 +17,28 @@ p{color:rgba(245,237,224,.4);font-size:13px;margin-bottom:40px;text-align:center
 .card__emoji{font-size:48px;margin-bottom:16px;display:block}
 .card__title{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:6px;color:#E8B85E}
 .card__desc{font-size:12px;color:rgba(245,237,224,.4);line-height:1.6}
-.pin{margin-top:24px;font-size:11px;color:rgba(245,237,224,.2);text-align:center}
-.pin b{color:#D4A24E}
+.info{margin-top:32px;font-size:11px;color:rgba(245,237,224,.15);text-align:center;line-height:1.8}
+.info b{color:#D4A24E}
 </style>
 </head>
 <body>
 <h1>Brew Studio</h1>
-<p>เลือกหน้าที่ต้องการทดสอบ</p>
+<p>ระบบจัดการสูตรเมนูเครื่องดื่ม</p>
 <div class="cards">
-  <a href="owner.html" class="card">
+  <a href="owner/index.html" class="card">
     <span class="card__emoji">👨‍💼</span>
     <div class="card__title">Owner Dashboard</div>
-    <div class="card__desc">จัดการเมนู หมวดหมู่<br>ตั้งค่าร้าน ดูบันทึก</div>
+    <div class="card__desc">เข้าสู่ระบบด้วย Email/Password<br>จัดการเมนู หมวดหมู่ ตั้งค่าร้าน</div>
   </a>
-  <a href="staff.html" class="card">
+  <a href="staff/index.html" class="card">
     <span class="card__emoji">👩‍🍳</span>
     <div class="card__title">Staff App</div>
-    <div class="card__desc">ดูสูตรเมนู ส่วนผสม<br>วิธีทำ (PIN: 1234)</div>
+    <div class="card__desc">เข้าด้วย PIN จากเจ้าของร้าน<br>ดูสูตรเมนู ส่วนผสม วิธีทำ</div>
   </a>
 </div>
-<div class="pin">Firebase Project: <b>coffex-d1b96</b></div>
+<div class="info">
+  Firebase: <b>coffex-d1b96</b><br>
+  สร้างบัญชี Owner ใน Firebase Console → Authentication → Add user
+</div>
 </body>
 </html>
