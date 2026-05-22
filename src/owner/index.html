@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Brew Studio — Owner Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ═══ LOGIN SCREEN ═══ -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-bg"></div>
+    <div class="login-bg"></div>
+    <div class="login-logo-wrap">
+      <div class="login-wordmark">Brew</div>
+      <div class="login-tagline">Owner Dashboard</div>
+    </div>
+    <div class="login-card">
+      <div class="login-title">เข้าสู่ระบบ</div>
+      <div class="field">
+        <label class="field__label">Email</label>
+        <input class="input input--dark" id="loginEmail" type="email" 
+               placeholder="owner@example.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label class="field__label">Password</label>
+        <input class="input input--dark" id="loginPassword" type="password" 
+               placeholder="รหัสผ่าน" autocomplete="current-password">
+      </div>
+      <div id="loginError" class="login-error"></div>
+      <button class="btn btn--primary btn--full" id="loginBtn" onclick="handleLogin()">
+        เข้าสู่ระบบ
+      </button>
+      <div class="login-hint">
+        สร้างบัญชีใน <a href="https://console.firebase.google.com" target="_blank" rel="noopener">Firebase Console</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MAIN APP ═══ -->
+  <div id="app" class="app" style="display:none">
+
+    <!-- Top Navigation -->
+    <nav class="app-nav">
+      <div id="syncBar" class="sync-bar">
+        <div class="sync-dot"></div>
+        <span id="syncText">กำลังเชื่อมต่อ...</span>
+      </div>
+      <div class="topnav">
+        <div class="nav-brand-wrap">
+          <img class="nav-logo" id="navLogo" alt="">
+          <div class="nav-brand text-display" id="navBrand">Brew ✦</div>
+        </div>
+        <div class="nav-actions">
+          <button class="btn btn--dark btn--sm" onclick="openCategoryModal()">＋ หมวดหมู่</button>
+          <button class="btn btn--secondary btn--sm" onclick="handleLogout()">ออก</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ─── Tab: Menu ─── -->
+    <div class="page page--active" id="pageMenu">
+      <!-- Staff Link Banner -->
+      <div class="staff-banner">
+        <span class="staff-banner__icon">🔗</span>
+        <div class="staff-banner__text">
+          <div class="staff-banner__title">ลิงก์สำหรับพนักงาน</div>
+          <div class="staff-banner__sub" id="staffLinkText">staff/index.html</div>
+        </div>
+        <button class="btn btn--sm" style="background:rgba(200,151,74,.2);color:var(--gold);border:1px solid rgba(200,151,74,.3)" onclick="copyStaffLink()">
+          คัดลอก
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="searchInput" placeholder="ค้นหาเมนู…" oninput="renderMenus()">
+        </div>
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="cat-bar" id="catBar"></div>
+
+      <!-- Menu Grid -->
+      <div class="menu-section">
+        <div class="menu-header">
+          <div class="text-display text-display--sm" id="sectionTitle">เมนูทั้งหมด</div>
+          <div class="text-small text-muted" id="sectionCount"></div>
+        </div>
+        <div class="grid-menu" id="menuGrid"></div>
+      </div>
+    </div>
+
+    <!-- ─── Tab: Access Log ─── -->
+    <div class="page" id="pageLog">
+      <div class="log-wrap">
+        <div class="log-header">
+          <div class="text-display text-display--md">บันทึกการเข้าใช้</div>
+          <button class="btn btn--danger btn--sm" onclick="handleClearLogs()">ล้างข้อมูล</button>
+        </div>
+        <div class="log-stats">
+          <div class="stat-card card">
+            <div class="stat-num text-display text-gold" id="statToday">0</div>
+            <div class="text-tiny text-muted">วันนี้</div>
+          </div>
+          <div class="stat-card card">
+            <div class="stat-num text-display text-gold" id="statWeek">0</div>
+            <div class="text-tiny text-muted">สัปดาห์นี้</div>
+          </div>
+          <div class="stat-card card">
+            <div class="stat-num text-display text-gold" id="statTotal">0</div>
+            <div class="text-tiny text-muted">ทั้งหมด</div>
+          </div>
+        </div>
+        <div class="log-list" id="logList"></div>
+      </div>
+    </div>
+
+    <!-- ─── Tab: Settings ─── -->
+    <div class="page" id="pageSettings">
+      <div class="settings-wrap">
+        <!-- Branding -->
+        <section class="set-section">
+          <div class="text-label">🎨 แบรนด์ร้าน</div>
+          <div class="card">
+            <div class="set-row">
+              <div class="set-row__icon">🏷️</div>
+              <div class="set-row__body">
+                <div class="set-row__label">ชื่อร้าน / โลโก้</div>
+                <div class="set-row__sub text-small text-muted" id="brandingSub">Brew</div>
+              </div>
+              <button class="btn btn--secondary btn--sm" onclick="openBrandingModal()">แก้ไข</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Hero Text -->
+        <section class="set-section">
+          <div class="text-label">📝 ข้อความหน้าพนักงาน</div>
+          <div class="card">
+            <div class="set-row">
+              <div class="set-row__icon">💬</div>
+              <div class="set-row__body">
+                <div class="set-row__label">ข้อความต้อนรับ & หัวข้อ</div>
+                <div class="set-row__sub text-small text-muted" id="heroSub">สวัสดีวันนี้ ☀️</div>
+              </div>
+              <button class="btn btn--secondary btn--sm" onclick="openHeroModal()">แก้ไข</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Staff PIN -->
+        <section class="set-section">
+          <div class="text-label">🔐 รหัสพนักงาน (PIN)</div>
+          <div class="card">
+            <div class="set-row">
+              <div class="set-row__icon">🔑</div>
+              <div class="set-row__body">
+                <div class="set-row__label">PIN ปัจจุบัน</div>
+                <div class="set-row__sub text-small text-muted" id="pinSub">••••</div>
+              </div>
+              <button class="btn btn--secondary btn--sm" onclick="openPinModal()">เปลี่ยน</button>
+            </div>
+            <div class="set-row">
+              <div class="set-row__icon">📋</div>
+              <div class="set-row__body">
+                <div class="set-row__label">แชร์ PIN ให้พนักงาน</div>
+                <div class="set-row__sub text-small text-muted">คัดลอก PIN สำหรับแจก</div>
+              </div>
+              <button class="btn btn--secondary btn--sm" onclick="sharePin()">คัดลอก</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Bottom Tab Bar -->
+    <div class="tab-bar-bottom">
+      <div class="tab-bar">
+        <button class="tab tab--active" data-tab="menu" onclick="switchTab('menu')">
+          <span class="tab__icon">☕</span>เมนู
+        </button>
+        <button class="tab" data-tab="log" onclick="switchTab('log')">
+          <span class="tab__icon">📊</span>การเข้าใช้
+        </button>
+        <button class="tab" data-tab="settings" onclick="switchTab('settings')">
+          <span class="tab__icon">⚙️</span>ตั้งค่า
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB -->
+  <button class="fab" id="fab" style="display:none" onclick="openMenuModal(-1)">＋</button>
+
+  <!-- ═══ MODALS ═══ -->
+
+  <!-- Menu Editor Modal -->
+  <div class="overlay" id="menuModal">
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <div class="sheet__header">
+        <div class="sheet__title" id="menuModalTitle">เพิ่มเมนูใหม่</div>
+        <button class="sheet__close" onclick="closeMenuModal()">✕</button>
+      </div>
+      <div class="sheet__body">
+        <div class="field">
+          <label class="field__label">รูปภาพ <span class="field__hint">สัดส่วน 3:4</span></label>
+          <div class="image-zone" id="imageZone" onclick="document.getElementById('imageInput').click()">
+            <img class="image-zone__preview" id="imagePreview" alt="">
+            <span class="image-zone__icon">📷</span>
+            <span class="image-zone__text">กดเพื่อเลือกรูป</span>
+          </div>
+          <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="handleImageSelect(event)">
+          <input class="input" id="imageUrl" placeholder="หรือวาง URL รูปภาพ" style="margin-top:8px;font-size:13px" oninput="handleImageUrl(this.value)">
+          <button class="btn btn--danger btn--sm btn--full" id="imageClearBtn" style="display:none;margin-top:6px" onclick="clearImage()">✕ ลบรูปภาพ</button>
+        </div>
+        <div class="field">
+          <label class="field__label">ชื่อเมนู</label>
+          <input class="input" id="menuName" placeholder="เช่น Caramel Latte" maxlength="200">
+        </div>
+        <div class="field">
+          <label class="field__label">หมวดหมู่</label>
+          <select class="input" id="menuCategory"></select>
+        </div>
+        <div class="field">
+          <label class="field__label">คำอธิบาย</label>
+          <input class="input" id="menuDesc" placeholder="เช่น กาแฟลาเต้ราดซอสคาราเมล" maxlength="500">
+        </div>
+        <div class="field">
+          <label class="field__label">ส่วนผสม</label>
+          <div id="ingredientsList"></div>
+          <button class="btn btn--secondary btn--sm btn--full" style="margin-top:6px" onclick="addIngredientRow()">＋ เพิ่มส่วนผสม</button>
+        </div>
+        <div class="field">
+          <label class="field__label">วิธีทำ</label>
+          <div id="stepsList"></div>
+          <button class="btn btn--secondary btn--sm btn--full" style="margin-top:6px" onclick="addStepRow()">＋ เพิ่มขั้นตอน</button>
+        </div>
+        <div class="field">
+          <label class="field__label">หมายเหตุ <span class="field__hint">ไม่บังคับ</span></label>
+          <textarea class="input" id="menuNote" placeholder="เคล็ดลับ..." maxlength="1000"></textarea>
+        </div>
+        <button class="btn btn--primary btn--full" onclick="saveMenu()">💾 บันทึกเมนู</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Manager Modal -->
+  <div class="overlay" id="categoryModal">
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <div class="sheet__header">
+        <div class="sheet__title">จัดการหมวดหมู่</div>
+        <button class="sheet__close" onclick="closeCategoryModal()">✕</button>
+      </div>
+      <div class="sheet__body">
+        <ul class="cat-list" id="catList"></ul>
+        <div class="cat-add-row">
+          <input class="input" id="newCatEmoji" value="☕" maxlength="2" style="width:52px;text-align:center;font-size:20px;padding:10px 6px">
+          <input class="input" id="newCatName" placeholder="ชื่อหมวดหมู่ใหม่" style="flex:1">
+          <button class="btn btn--dark btn--sm" onclick="addNewCategory()">เพิ่ม</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Branding Modal -->
+  <div class="overlay" id="brandingModal">
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <div class="sheet__header">
+        <div class="sheet__title">แบรนด์ร้าน</div>
+        <button class="sheet__close" onclick="closeBrandingModal()">✕</button>
+      </div>
+      <div class="sheet__body">
+        <div class="field">
+          <label class="field__label">โลโก้ร้าน</label>
+          <div class="logo-zone" id="logoZone" onclick="document.getElementById('logoInput').click()">
+            <img class="logo-zone__preview" id="logoPreview" alt="">
+            <span class="logo-zone__icon">🖼️</span>
+            <span class="logo-zone__text">กดเลือกโลโก้</span>
+          </div>
+          <input type="file" id="logoInput" accept="image/*" style="display:none" onchange="handleLogoSelect(event)">
+          <input class="input" id="logoUrl" placeholder="หรือวาง URL โลโก้" style="margin-top:8px;font-size:13px">
+        </div>
+        <div class="field">
+          <label class="field__label">ชื่อร้าน</label>
+          <input class="input" id="brandNameInput" placeholder="ชื่อร้านของคุณ" maxlength="100">
+        </div>
+        <button class="btn btn--primary btn--full" onclick="saveBranding()">💾 บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Text Modal -->
+  <div class="overlay" id="heroModal">
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <div class="sheet__header">
+        <div class="sheet__title">ข้อความหน้าพนักงาน</div>
+        <button class="sheet__close" onclick="closeHeroModal()">✕</button>
+      </div>
+      <div class="sheet__body">
+        <div class="field">
+          <label class="field__label">ข้อความทักทาย</label>
+          <input class="input" id="heroGreet" placeholder="สวัสดีวันนี้ ☀️" maxlength="100">
+        </div>
+        <div class="field">
+          <label class="field__label">หัวข้อบรรทัด 1</label>
+          <input class="input" id="heroLine1" placeholder="เมนู" maxlength="50">
+        </div>
+        <div class="field">
+          <label class="field__label">ส่วนเน้น (สีทอง)</label>
+          <input class="input" id="heroLine1b" placeholder="ทั้งหมด" maxlength="50">
+        </div>
+        <div class="field">
+          <label class="field__label">หัวข้อบรรทัด 2</label>
+          <input class="input" id="heroLine2" placeholder="ของเรา" maxlength="50">
+        </div>
+        <button class="btn btn--primary btn--full" onclick="saveHero()">💾 บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIN Modal -->
+  <div class="overlay" id="pinModal">
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <div class="sheet__header">
+        <div class="sheet__title">ตั้ง PIN พนักงาน</div>
+        <button class="sheet__close" onclick="closePinModal()">✕</button>
+      </div>
+      <div class="sheet__body">
+        <p class="text-small text-muted" style="margin-bottom:16px;line-height:1.6">
+          PIN ใช้ร่วมกันทุกคน ตั้งได้ 4–8 ตัวเลข
+        </p>
+        <div class="field">
+          <label class="field__label">PIN ใหม่</label>
+          <input class="input" type="password" id="newPinInput" placeholder="4–8 ตัวเลข" maxlength="8" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label class="field__label">ยืนยัน PIN</label>
+          <input class="input" type="password" id="confirmPinInput" placeholder="ใส่อีกครั้ง" maxlength="8" inputmode="numeric">
+        </div>
+        <button class="btn btn--primary btn--full" onclick="savePin()">💾 บันทึก PIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Dialog -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-card card card--raised">
+      <div class="confirm-icon">🗑️</div>
+      <div class="text-display text-display--sm" style="margin-bottom:8px">ลบเมนูนี้?</div>
+      <div class="text-small text-muted" id="confirmText" style="margin-bottom:20px">ไม่สามารถกู้คืนได้</div>
+      <div class="confirm-actions">
+        <button class="btn btn--secondary" onclick="closeConfirm()">ยกเลิก</button>
+        <button class="btn btn--danger" onclick="confirmDelete()">ลบเลย</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Script -->
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>

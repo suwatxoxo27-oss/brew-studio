@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Brew Studio — Staff</title>
+  <meta name="theme-color" content="#0F0A07">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ═══ PIN LOGIN ═══ -->
+  <div id="pinScreen" class="pin-screen">
+    <div class="pin-glow pin-glow--1"></div>
+    <div class="pin-glow pin-glow--2"></div>
+
+    <div class="pin-logo-wrap">
+      <img class="pin-logo" id="pinLogo" alt="">
+      <div class="pin-brand text-display" id="pinBrand">Brew ✦</div>
+    </div>
+
+    <div class="pin-card">
+      <div class="pin-heading">ใส่ PIN เพื่อดูสูตร</div>
+      <div class="pin-dots" id="pinDots">
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+        <span class="pin-dot"></span>
+      </div>
+      <div class="pin-error" id="pinError"></div>
+      <div class="numpad" id="numpad">
+        <button class="num-key" onclick="pressKey('1')">1</button>
+        <button class="num-key" onclick="pressKey('2')">2</button>
+        <button class="num-key" onclick="pressKey('3')">3</button>
+        <button class="num-key" onclick="pressKey('4')">4</button>
+        <button class="num-key" onclick="pressKey('5')">5</button>
+        <button class="num-key" onclick="pressKey('6')">6</button>
+        <button class="num-key" onclick="pressKey('7')">7</button>
+        <button class="num-key" onclick="pressKey('8')">8</button>
+        <button class="num-key" onclick="pressKey('9')">9</button>
+        <button class="num-key num-key--empty"></button>
+        <button class="num-key" onclick="pressKey('0')">0</button>
+        <button class="num-key num-key--del" onclick="pressDelete()">⌫</button>
+      </div>
+    </div>
+
+    <div class="pin-name-wrap" id="pinNameWrap" style="display:none">
+      <div class="pin-name-label">ชื่อของคุณ</div>
+      <input class="input input--dark" id="staffNameInput" placeholder="ใส่ชื่อเล่น" maxlength="50">
+      <button class="btn btn--primary btn--full" onclick="submitStaffName()">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+
+  <!-- ═══ MAIN APP ═══ -->
+  <div id="staffApp" class="staff-app" style="display:none">
+
+    <!-- Hero Header -->
+    <header class="hero">
+      <div class="hero__top">
+        <img class="hero__logo" id="heroLogo" alt="">
+        <div class="hero__brand text-display" id="heroBrand">Brew ✦</div>
+        <button class="hero__logout" onclick="staffLogout()">ออก</button>
+      </div>
+      <div class="hero__greet" id="heroGreet">สวัสดีวันนี้ ☀️</div>
+      <div class="hero__title text-display">
+        <span id="heroLine1">เมนู</span>
+        <span class="hero__gold" id="heroLine1b">ทั้งหมด</span>
+        <br>
+        <span id="heroLine2">ของเรา</span>
+      </div>
+    </header>
+
+    <!-- Search -->
+    <div class="staff-search-wrap">
+      <div class="search-box search-box--staff">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="staffSearch" placeholder="ค้นหาสูตร..." oninput="staffRenderMenus()">
+      </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="staff-cat-bar" id="staffCatBar"></div>
+
+    <!-- Menu Grid -->
+    <div class="staff-grid" id="staffGrid"></div>
+
+    <!-- Footer -->
+    <div class="staff-footer">
+      <div class="staff-footer__text">Powered by <strong>Brew Studio</strong></div>
+    </div>
+  </div>
+
+  <!-- ═══ RECIPE DETAIL MODAL ═══ -->
+  <div class="overlay" id="recipeModal">
+    <div class="sheet recipe-sheet">
+      <div class="sheet__handle"></div>
+      <div class="recipe-image-wrap" id="recipeImageWrap">
+        <img class="recipe-image" id="recipeImage" alt="">
+        <button class="recipe-close" onclick="closeRecipe()">✕</button>
+      </div>
+      <div class="recipe-body">
+        <div class="recipe-category" id="recipeCategory"></div>
+        <div class="recipe-name text-display" id="recipeName"></div>
+        <div class="recipe-desc" id="recipeDesc"></div>
+
+        <div class="recipe-section" id="ingredientsSection" style="display:none">
+          <div class="recipe-section__title text-label">ส่วนผสม</div>
+          <ul class="recipe-ingredients" id="recipeIngredients"></ul>
+        </div>
+
+        <div class="recipe-section" id="stepsSection" style="display:none">
+          <div class="recipe-section__title text-label">วิธีทำ</div>
+          <ol class="recipe-steps" id="recipeSteps"></ol>
+        </div>
+
+        <div class="recipe-note" id="recipeNote" style="display:none">
+          <div class="recipe-note__title">💡 หมายเหตุ</div>
+          <div class="recipe-note__text" id="recipeNoteText"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ──
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwnerOf(shopId) {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/shops/$(shopId)).data.ownerId == request.auth.uid;
+    }
+
+    function isValidString(field, maxLen) {
+      return field is string && field.size() > 0 && field.size() <= maxLen;
+    }
+
+    // ── Shops ──
+    match /shops/{shopId} {
+      // Owner can read/write their own shop
+      allow read: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn()
+        && request.resource.data.ownerId == request.auth.uid
+        && isValidString(request.resource.data.name, 100);
+      allow update: if isOwnerOf(shopId);
+      allow delete: if false; // never delete shops
+
+      // Public read for staff (they need shop config like branding)
+      // Staff access via shopId in URL — no auth required for read
+    }
+
+    // Public read access for shops (staff needs branding info)
+    match /shops_public/{shopId} {
+      allow read: if true;
+      allow write: if isOwnerOf(shopId);
+    }
+
+    // ── Menus ──
+    match /menus/{menuId} {
+      // Anyone can read menus (staff need this)
+      allow read: if true;
+
+      // Only owner can write
+      allow create: if isSignedIn()
+        && isValidString(request.resource.data.name, 200)
+        && request.resource.data.shopId is string
+        && isOwnerOf(request.resource.data.shopId);
+      allow update: if isSignedIn()
+        && isOwnerOf(resource.data.shopId);
+      allow delete: if isSignedIn()
+        && isOwnerOf(resource.data.shopId);
+    }
+
+    // ── Categories ──
+    match /categories/{catId} {
+      allow read: if true;
+      allow create: if isSignedIn()
+        && isValidString(request.resource.data.name, 100)
+        && isOwnerOf(request.resource.data.shopId);
+      allow update, delete: if isSignedIn()
+        && isOwnerOf(resource.data.shopId);
+    }
+
+    // ── Access Logs ──
+    match /access_logs/{logId} {
+      // Anyone can create a log (staff logging in)
+      allow create: if request.resource.data.timestamp == request.time
+        && isValidString(request.resource.data.staffName, 100)
+        && request.resource.data.shopId is string;
+
+      // Only owner can read/delete logs
+      allow read: if isSignedIn()
+        && isOwnerOf(resource.data.shopId);
+      allow delete: if isSignedIn()
+        && isOwnerOf(resource.data.shopId);
+      allow update: if false;
+    }
+
+    // ── Block everything else ──
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
