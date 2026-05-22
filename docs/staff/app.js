@@ -34,9 +34,23 @@ const unsubs = [];
   const params = new URLSearchParams(window.location.search);
   state.shopId = params.get("shop");
 
+  // If no ?shop=ID, try to find the first shop in shops_public
   if (!state.shopId) {
-    document.getElementById("pinError").textContent = "ลิงก์ไม่ถูกต้อง — ขาด ?shop=ID";
-    return;
+    try {
+      const { getDocs: gd, collection: col, limit: lim, query: qr } = await import("https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js");
+      const { db: database } = await import("../shared/firebase.js");
+      const snap = await gd(qr(col(database, "shops_public"), lim(1)));
+      if (!snap.empty) {
+        state.shopId = snap.docs[0].id;
+      } else {
+        document.getElementById("pinError").textContent = "ยังไม่มีร้านค้าในระบบ — ให้เจ้าของร้านล็อกอินก่อน";
+        return;
+      }
+    } catch (e) {
+      console.error("Auto-find shop error:", e);
+      document.getElementById("pinError").textContent = "ไม่สามารถค้นหาร้านค้าได้";
+      return;
+    }
   }
 
   // Load shop public data

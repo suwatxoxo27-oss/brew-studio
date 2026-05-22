@@ -828,10 +828,13 @@ window.handleClearLogs = async function () {
 // ══════════════════════════════════════
 
 window.copyStaffLink = function () {
-  const base = window.location.origin;
+  const base = window.location.origin + window.location.pathname.replace(/\/owner\/.*$/, '');
   const link = `${base}/staff/index.html?shop=${state.shopId}`;
   document.getElementById("staffLinkText").textContent = link;
-  navigator.clipboard.writeText(link).then(() => showToast("คัดลอกลิงก์แล้ว"));
+  navigator.clipboard.writeText(link).then(() => showToast("คัดลอกลิงก์แล้ว ✓")).catch(() => {
+    // Fallback for non-HTTPS
+    showToast("ลิงก์: " + link);
+  });
 };
 
 // ══════════════════════════════════════
