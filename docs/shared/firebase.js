@@ -18,12 +18,12 @@ import {
 // ── Firebase Config ──
 // TODO: ย้ายไปเป็น environment config ก่อน deploy production
 const firebaseConfig = {
-  apiKey: "AIzaSyDd4IA6nTCsyLdZV8TbM02wxp8rv5jha9M",
-  authDomain: "coffex-d1b96.firebaseapp.com",
-  projectId: "coffex-d1b96",
-  storageBucket: "coffex-d1b96.firebasestorage.app",
-  messagingSenderId: "229427827374",
-  appId: "1:229427827374:web:9db5e805d977c95423133f",
+  apiKey: "AIzaSyBZGuYoCi4zU1Zdz4lnCJRYM6y4zzJZAcs",
+  authDomain: "yp-coffeex.firebaseapp.com",
+  projectId: "yp-coffeex",
+  storageBucket: "yp-coffeex.firebasestorage.app",
+  messagingSenderId: "353142577223",
+  appId: "1:353142577223:web:2311a01754601976d03962",
 };
 
 // ── Initialize ──
