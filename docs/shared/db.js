@@ -1,12 +1,11 @@
 /**
  * Brew Studio — Firestore Database Operations
- * 
- * แยก collection ชัดเจน — ไม่ยัดทุกอย่างใน doc เดียว
+ * Simplified queries (no composite indexes needed)
  */
 
 import {
   collection, doc, addDoc, setDoc, getDoc, getDocs,
-  updateDoc, deleteDoc, onSnapshot, query, where, orderBy,
+  updateDoc, deleteDoc, onSnapshot, query, where,
   serverTimestamp, limit,
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 import { db } from "./firebase.js";
@@ -15,14 +14,9 @@ import { db } from "./firebase.js";
 // SHOP
 // ══════════════════════════════════════
 
-/**
- * Create or update shop profile
- */
 async function saveShop(shopId, data) {
   const ref = doc(db, "shops", shopId);
   await setDoc(ref, { ...data, updatedAt: serverTimestamp() }, { merge: true });
-
-  // Also save public-facing data (readable by staff without auth)
   const publicData = {
     name: data.name || "",
     logoUrl: data.logoUrl || "",
@@ -49,9 +43,6 @@ function watchShopPublic(shopId, callback) {
   });
 }
 
-/**
- * Get the shop owned by this user
- */
 async function getMyShop(uid) {
   const q = query(collection(db, "shops"), where("ownerId", "==", uid), limit(1));
   const snap = await getDocs(q);
@@ -61,7 +52,7 @@ async function getMyShop(uid) {
 }
 
 // ══════════════════════════════════════
-// MENUS
+// MENUS — no orderBy, sort in JS
 // ══════════════════════════════════════
 
 async function addMenu(menuData) {
@@ -87,17 +78,21 @@ async function deleteMenu(menuId) {
 function watchMenus(shopId, callback) {
   const q = query(
     collection(db, "menus"),
-    where("shopId", "==", shopId),
-    orderBy("createdAt", "desc")
+    where("shopId", "==", shopId)
   );
   return onSnapshot(q, (snap) => {
     const menus = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    menus.sort((a, b) => {
+      const ta = a.createdAt?.seconds || 0;
+      const tb = b.createdAt?.seconds || 0;
+      return tb - ta;
+    });
     callback(menus);
-  });
+  }, (err) => { console.error('watchMenus error:', err); callback([]); });
 }
 
 // ══════════════════════════════════════
-// CATEGORIES
+// CATEGORIES — no orderBy, sort in JS
 // ══════════════════════════════════════
 
 async function addCategory(catData) {
@@ -119,17 +114,17 @@ async function deleteCategory(catId) {
 function watchCategories(shopId, callback) {
   const q = query(
     collection(db, "categories"),
-    where("shopId", "==", shopId),
-    orderBy("name")
+    where("shopId", "==", shopId)
   );
   return onSnapshot(q, (snap) => {
     const cats = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    cats.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     callback(cats);
-  });
+  }, (err) => { console.error('watchCategories error:', err); callback([]); });
 }
 
 // ══════════════════════════════════════
-// ACCESS LOGS
+// ACCESS LOGS — no orderBy, sort in JS
 // ══════════════════════════════════════
 
 async function addAccessLog(shopId, staffName) {
@@ -143,14 +138,17 @@ async function addAccessLog(shopId, staffName) {
 function watchAccessLogs(shopId, callback, maxItems = 100) {
   const q = query(
     collection(db, "access_logs"),
-    where("shopId", "==", shopId),
-    orderBy("timestamp", "desc"),
-    limit(maxItems)
+    where("shopId", "==", shopId)
   );
   return onSnapshot(q, (snap) => {
     const logs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    callback(logs);
-  });
+    logs.sort((a, b) => {
+      const ta = a.timestamp?.seconds || 0;
+      const tb = b.timestamp?.seconds || 0;
+      return tb - ta;
+    });
+    callback(logs.slice(0, maxItems));
+  }, (err) => { console.error('watchAccessLogs error:', err); callback([]); });
 }
 
 async function clearAccessLogs(shopId) {
