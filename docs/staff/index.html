@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Brew Studio — Staff</title>
-  <meta name="theme-color" content="#0F0A07">
+  <meta name="theme-color" content="#1A1410">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../shared/styles.css">
@@ -16,19 +16,16 @@
   <div id="pinScreen" class="pin-screen">
     <div class="pin-glow pin-glow--1"></div>
     <div class="pin-glow pin-glow--2"></div>
-
     <div class="pin-logo-wrap">
       <img class="pin-logo" id="pinLogo" alt="">
       <div class="pin-brand text-display" id="pinBrand">Brew ✦</div>
+      <div class="pin-tagline">Recipe Studio</div>
     </div>
-
     <div class="pin-card">
       <div class="pin-heading">ใส่ PIN เพื่อดูสูตร</div>
       <div class="pin-dots" id="pinDots">
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
-        <span class="pin-dot"></span>
+        <span class="pin-dot"></span><span class="pin-dot"></span>
+        <span class="pin-dot"></span><span class="pin-dot"></span>
       </div>
       <div class="pin-error" id="pinError"></div>
       <div class="numpad" id="numpad">
@@ -46,7 +43,6 @@
         <button class="num-key num-key--del" onclick="pressDelete()">⌫</button>
       </div>
     </div>
-
     <div class="pin-name-wrap" id="pinNameWrap" style="display:none">
       <div class="pin-name-label">ชื่อของคุณ</div>
       <input class="input input--dark" id="staffNameInput" placeholder="ใส่ชื่อเล่น" maxlength="50">
@@ -57,31 +53,37 @@
   <!-- ═══ MAIN APP ═══ -->
   <div id="staffApp" class="staff-app" style="display:none">
 
-    <!-- Hero Header -->
-    <header class="hero">
-      <div class="hero__top">
-        <img class="hero__logo" id="heroLogo" alt="">
-        <div class="hero__brand text-display" id="heroBrand">Brew ✦</div>
-        <button class="hero__logout" onclick="staffLogout()">ออก</button>
-      </div>
-      <div class="hero__greet" id="heroGreet">สวัสดีวันนี้ ☀️</div>
-      <div class="hero__title text-display">
-        <span id="heroLine1">เมนู</span>
-        <span class="hero__gold" id="heroLine1b">ทั้งหมด</span>
-        <br>
-        <span id="heroLine2">ของเรา</span>
-      </div>
-    </header>
-
-    <!-- Search -->
-    <div class="staff-search-wrap">
-      <div class="search-box search-box--staff">
-        <span class="search-icon">⌕</span>
-        <input type="text" id="staffSearch" placeholder="ค้นหาสูตร..." oninput="staffRenderMenus()">
+    <!-- STICKY TOPBAR -->
+    <div class="topbar">
+      <div class="topbar__inner">
+        <img class="topbar__logo" id="heroLogo" alt="">
+        <div class="topbar__body">
+          <div class="topbar__brand" id="heroBrand">Brew ✦</div>
+          <div class="topbar__greet" id="staffGreet">สวัสดี 👋</div>
+        </div>
+        <button class="topbar__logout" onclick="staffLogout()">ออก</button>
       </div>
     </div>
 
-    <!-- Category Tabs -->
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero__text">
+        <div class="hero__title text-display">
+          <span id="heroLine1">เมนู</span><span class="hero__gold" id="heroLine1b">ทั้งหมด</span><br><span id="heroLine2">ของเรา</span>
+        </div>
+        <div class="hero__count"><span class="hero__count-dot"></span><span id="menuCount">0</span> สูตรพร้อมเสิร์ฟ</div>
+      </div>
+      <div class="hero__greet-hidden" id="heroGreet" style="display:none"></div>
+      <div class="hero__search">
+        <div class="hero__search-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="7"/><path d="M21 21l-5.2-5.2"/></svg>
+          <input type="text" id="staffSearch" placeholder="พิมพ์ชื่อเมนู หรือวัตถุดิบ..." oninput="staffRenderMenus()">
+        </div>
+      </div>
+    </header>
+    <div class="hero-curve"></div>
+
+    <!-- Category Chips -->
     <div class="staff-cat-bar" id="staffCatBar"></div>
 
     <!-- Menu Grid -->
@@ -105,17 +107,14 @@
         <div class="recipe-category" id="recipeCategory"></div>
         <div class="recipe-name text-display" id="recipeName"></div>
         <div class="recipe-desc" id="recipeDesc"></div>
-
         <div class="recipe-section" id="ingredientsSection" style="display:none">
           <div class="recipe-section__title text-label">ส่วนผสม</div>
           <ul class="recipe-ingredients" id="recipeIngredients"></ul>
         </div>
-
         <div class="recipe-section" id="stepsSection" style="display:none">
           <div class="recipe-section__title text-label">วิธีทำ</div>
           <ol class="recipe-steps" id="recipeSteps"></ol>
         </div>
-
         <div class="recipe-note" id="recipeNote" style="display:none">
           <div class="recipe-note__title">💡 หมายเหตุ</div>
           <div class="recipe-note__text" id="recipeNoteText"></div>
@@ -125,6 +124,5 @@
   </div>
 
   <script type="module" src="app.js"></script>
-
 </body>
 </html>

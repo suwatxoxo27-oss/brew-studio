@@ -184,6 +184,9 @@ window.submitStaffName = async function () {
 function enterApp() {
   document.getElementById("pinScreen").style.display = "none";
   document.getElementById("staffApp").style.display = "block";
+  // Set staff greeting in topbar
+  const greetEl = document.getElementById("staffGreet");
+  if (greetEl) greetEl.textContent = "สวัสดี, " + state.staffName + " 👋";
   updateBranding();
 
   // Subscribe to realtime data
@@ -236,6 +239,10 @@ window.staffFilterCat = function (catId) {
 window.staffRenderMenus = function () {
   const grid = document.getElementById("staffGrid");
   const search = (document.getElementById("staffSearch")?.value || "").toLowerCase().trim();
+
+  // Update menu count badge
+  const countEl = document.getElementById("menuCount");
+  if (countEl) countEl.textContent = state.menus.length;
 
   let filtered = state.menus;
 
