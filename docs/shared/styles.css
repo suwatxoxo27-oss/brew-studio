@@ -223,3 +223,18 @@ select.input {
 /* ── Animations ── */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes cardIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* Toast fix — match brew-toast from utils.js */
+.brew-toast {
+  position: fixed; bottom: 96px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--amber, #D4A24E); color: var(--bg, #0F0A06);
+  padding: 11px 22px; border-radius: 999px;
+  font-size: 13px; font-weight: 700; z-index: 9999;
+  opacity: 0; pointer-events: none;
+  transition: all .3s cubic-bezier(.16,1,.3,1);
+  box-shadow: 0 8px 32px rgba(212,162,78,.25); white-space: nowrap;
+}
+.brew-toast--show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.brew-toast--error { background: var(--red, #D05A4C); color: #fff; box-shadow: 0 8px 32px rgba(208,90,76,.25); }
+.brew-toast--info { background: var(--bg2, #1A1410); color: var(--amber2, #E8B85E); }

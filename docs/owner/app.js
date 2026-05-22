@@ -86,7 +86,7 @@ async function initApp() {
       watchMenus(state.shopId, (menus) => {
         state.menus = menus;
         renderMenus();
-        updateSyncBar("connected", "เชื่อมต่อแล้ว · realtime sync");
+        updateSyncBar("connected", "เชื่อมต่อแล้ว · Realtime");
       })
     );
 
@@ -94,8 +94,9 @@ async function initApp() {
       watchCategories(state.shopId, (cats) => {
         state.categories = cats;
         renderCategoryTabs();
-        renderMenus(); // refresh counts
+        renderMenus();
         renderCategoryList();
+        updateSyncBar("connected", "เชื่อมต่อแล้ว · Realtime");
       })
     );
 
@@ -105,6 +106,9 @@ async function initApp() {
         renderLogs();
       })
     );
+
+    // Force initial sync bar update
+    updateSyncBar("connected", "เชื่อมต่อแล้ว · Realtime");
   } catch (err) {
     console.error("Init error:", err);
     updateSyncBar("error", "เกิดข้อผิดพลาด — กรุณาลอง refresh");
@@ -829,3 +833,19 @@ window.copyStaffLink = function () {
   document.getElementById("staffLinkText").textContent = link;
   navigator.clipboard.writeText(link).then(() => showToast("คัดลอกลิงก์แล้ว"));
 };
+
+// ══════════════════════════════════════
+// OVERLAY BACKDROP CLICK
+// ══════════════════════════════════════
+
+document.querySelectorAll('.overlay').forEach(ov => {
+  ov.addEventListener('click', (e) => {
+    if (e.target === ov) ov.classList.remove('overlay--open');
+  });
+});
+
+// Search debounce
+const searchEl = document.getElementById('searchInput');
+if (searchEl) {
+  searchEl.addEventListener('input', debounce(() => renderMenus(), 200));
+}
