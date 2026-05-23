@@ -243,17 +243,14 @@
 /* ── FAB ── */
 .fab {
   position: fixed; bottom: 80px; right: 20px; z-index: 200;
-  width: 56px; height: 56px; border-radius: 50%;
+  width: 60px; height: 60px; border-radius: 50%;
   background: linear-gradient(135deg, var(--amber), #8B6420);
-  color: #fff; font-size: 26px;
+  color: #fff; font-size: 28px; font-weight: 300;
   box-shadow: 0 6px 28px var(--amber-glow);
   display: flex; align-items: center; justify-content: center;
   transition: all .2s;
-  animation: fabIn .4s .5s cubic-bezier(.34,1.56,.64,1) both;
 }
-.fab:hover { transform: scale(1.08); }
 .fab:active { transform: scale(.9); }
-@keyframes fabIn { from { opacity:0; transform:scale(.4); } to { opacity:1; transform:scale(1); } }
 
 /* ── Tab Bar ── */
 .tab-bar-bottom {
@@ -280,3 +277,10 @@
   box-shadow:0 0 8px var(--amber-glow);
 }
 .tab__icon { font-size: 18px; margin-bottom: 1px; }
+
+/* FAB positioning fix — center within 430px container */
+@media (min-width: 431px) {
+  .fab {
+    right: calc(50% - 215px + 20px);
+  }
+}

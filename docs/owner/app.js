@@ -119,13 +119,11 @@ async function initApp() {
 function showLogin() {
   document.getElementById("loginScreen").style.display = "flex";
   document.getElementById("app").style.display = "none";
-  document.getElementById("fab").style.display = "none";
 }
 
 function showApp() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("app").style.display = "block";
-  document.getElementById("fab").style.display = "flex";
 }
 
 window.handleLogin = async function () {
@@ -186,7 +184,8 @@ window.switchTab = function (tab) {
   document.getElementById(pageMap[tab]).classList.add("page--active");
 
   // FAB only on menu tab
-  document.getElementById("fab").style.display = tab === "menu" ? "flex" : "none";
+  const fabEl = document.getElementById("fab");
+  if (fabEl) fabEl.style.display = tab === "menu" ? "flex" : "none";
 };
 
 // ══════════════════════════════════════
