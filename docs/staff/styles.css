@@ -17,7 +17,7 @@
 .pin-tagline{color:var(--text3);font-size:9px;font-weight:600;letter-spacing:4px;text-transform:uppercase;margin-top:6px}
 
 /* PIN Card */
-.pin-card{position:relative;z-index:1;width:100%;max-width:280px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:24px;padding:28px 24px 24px}
+.pin-card{position:relative;z-index:1;width:100%;max-width:280px;background:transparent;border:none;border-radius:0;padding:0}
 .pin-heading{text-align:center;color:var(--text2);font-size:13px;font-weight:500;margin-bottom:20px}
 
 /* PIN Dots */

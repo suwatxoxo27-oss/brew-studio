@@ -83,7 +83,7 @@ function updateBranding() {
   const logoUrl = state.shop.logoUrl || "";
 
   // PIN screen
-  document.getElementById("pinBrand").textContent = name + " ✦";
+  document.getElementById("pinBrand").textContent = name;
   const pinLogo = document.getElementById("pinLogo");
   if (logoUrl) {
     pinLogo.src = logoUrl;
@@ -92,7 +92,7 @@ function updateBranding() {
 
   // App screen
   if (state.isAuthenticated) {
-    document.getElementById("heroBrand").textContent = name + " ✦";
+    document.getElementById("heroBrand").textContent = name;
     const heroLogo = document.getElementById("heroLogo");
     if (logoUrl) {
       heroLogo.src = logoUrl;
