@@ -4,32 +4,42 @@
    ══════════════════════════════════════ */
 
 /* ── PIN Screen ── */
-.pin-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden;padding:24px}
+.pin-screen{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden;padding:32px 24px}
 .pin-glow{position:absolute;border-radius:50%;pointer-events:none}
-.pin-glow--1{width:450px;height:450px;background:radial-gradient(circle,rgba(212,162,78,.1) 0%,transparent 70%);top:-140px;right:-120px}
-.pin-glow--2{width:300px;height:300px;background:radial-gradient(circle,rgba(139,100,32,.08) 0%,transparent 70%);bottom:8%;left:-80px}
-.pin-logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:32px;position:relative;z-index:1}
-.pin-logo{width:56px;height:56px;border-radius:14px;object-fit:cover;display:none;margin-bottom:8px}
+.pin-glow--1{width:350px;height:350px;background:radial-gradient(circle,rgba(212,162,78,.06) 0%,transparent 70%);top:-100px;right:-80px}
+.pin-glow--2{width:250px;height:250px;background:radial-gradient(circle,rgba(139,100,32,.05) 0%,transparent 70%);bottom:10%;left:-60px}
+
+/* Logo + Brand */
+.pin-logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:36px;position:relative;z-index:1}
+.pin-logo{width:64px;height:64px;border-radius:16px;object-fit:cover;display:none;margin-bottom:14px;box-shadow:0 4px 20px rgba(0,0,0,.3)}
 .pin-logo--show{display:block}
-.pin-brand{font-family:var(--font-display);font-size:42px;font-weight:400;color:var(--amber)}
-.pin-tagline{color:var(--text3);font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;margin-top:4px}
-.pin-card{position:relative;z-index:1;width:100%;max-width:300px}
-.pin-heading{text-align:center;color:var(--text2);font-size:13px;font-weight:500;margin-bottom:22px}
-.pin-dots{display:flex;justify-content:center;gap:16px;margin-bottom:14px}
-.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(212,162,78,.2);transition:all .2s}
-.pin-dot--filled{background:var(--amber);border-color:var(--amber);transform:scale(1.15);box-shadow:0 0 14px var(--amber-glow)}
+.pin-brand{font-family:var(--font-display);font-size:28px;font-weight:500;color:var(--amber);letter-spacing:-.3px}
+.pin-tagline{color:var(--text3);font-size:9px;font-weight:600;letter-spacing:4px;text-transform:uppercase;margin-top:6px}
+
+/* PIN Card */
+.pin-card{position:relative;z-index:1;width:100%;max-width:280px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:24px;padding:28px 24px 24px}
+.pin-heading{text-align:center;color:var(--text2);font-size:13px;font-weight:500;margin-bottom:20px}
+
+/* PIN Dots */
+.pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:12px}
+.pin-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(212,162,78,.18);transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+.pin-dot--filled{background:var(--amber);border-color:var(--amber);transform:scale(1.2);box-shadow:0 0 12px var(--amber-glow)}
 .pin-dot--wrong{border-color:var(--red);animation:shake .4s ease}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
-.pin-error{text-align:center;color:var(--red);font-size:13px;min-height:20px;margin-bottom:8px;font-weight:600}
-.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:260px;margin:0 auto}
-.num-key{height:62px;border-radius:var(--r-md);font-size:24px;font-weight:400;font-family:var(--font-display);color:rgba(245,237,224,.9);background:var(--card);border:1px solid var(--border);transition:all .15s;position:relative;overflow:hidden}
-.num-key::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(212,162,78,.15),transparent 70%);opacity:0;transition:opacity .2s}
-.num-key:active{transform:scale(.94)}.num-key:active::after{opacity:1}
+.pin-error{text-align:center;color:var(--red);font-size:12px;min-height:18px;margin-bottom:6px;font-weight:600}
+
+/* Numpad */
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:240px;margin:0 auto}
+.num-key{height:56px;border-radius:14px;font-size:22px;font-weight:400;font-family:var(--font-display);color:rgba(245,237,224,.85);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);transition:all .12s;position:relative;overflow:hidden}
+.num-key::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(212,162,78,.12),transparent 70%);opacity:0;transition:opacity .15s}
+.num-key:active{transform:scale(.92);background:rgba(212,162,78,.08)}.num-key:active::after{opacity:1}
 .num-key--empty{background:transparent;border:none;pointer-events:none}
-.num-key--del{font-size:18px;color:var(--text3);background:transparent;border:none}
-.pin-name-wrap{position:relative;z-index:1;width:100%;max-width:300px;margin-top:28px}
-.pin-name-label{text-align:center;color:var(--text2);font-size:13px;margin-bottom:14px}
-.pin-name-wrap .input{margin-bottom:14px;text-align:center}
+.num-key--del{font-size:16px;color:var(--text3);background:transparent;border:none}
+
+/* Name Input */
+.pin-name-wrap{position:relative;z-index:1;width:100%;max-width:280px;margin-top:24px}
+.pin-name-label{text-align:center;color:var(--text2);font-size:13px;margin-bottom:12px}
+.pin-name-wrap .input{margin-bottom:12px;text-align:center;border-radius:14px}
 
 /* ── Staff App ── */
 .staff-app{background:#F8F5EF;color:#1A1410;min-height:100vh;padding-bottom:40px;animation:fadeIn .4s ease}
