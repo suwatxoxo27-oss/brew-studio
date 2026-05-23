@@ -103,7 +103,7 @@
         <span>ปิด</span>
       </div>
       <div class="recipe-image-wrap" id="recipeImageWrap">
-        <img class="recipe-image" id="recipeImage" alt="">
+        <img class="recipe-image" id="recipeImage" alt="" onclick="openFullImage(this.src)">
         <button class="recipe-close" onclick="closeRecipe()">✕</button>
       </div>
       <div class="recipe-body">
@@ -125,6 +125,24 @@
       </div>
     </div>
   </div>
+
+  <!-- Fullscreen Image Viewer -->
+  <div class="img-viewer" id="imgViewer" onclick="closeFullImage()">
+    <button class="img-viewer__close" onclick="closeFullImage()">✕</button>
+    <img class="img-viewer__img" id="imgViewerImg" alt="">
+    <div class="img-viewer__hint">แตะเพื่อปิด</div>
+  </div>
+
+  <script>
+  function openFullImage(src) {
+    if (!src) return;
+    document.getElementById('imgViewerImg').src = src;
+    document.getElementById('imgViewer').classList.add('img-viewer--open');
+  }
+  function closeFullImage() {
+    document.getElementById('imgViewer').classList.remove('img-viewer--open');
+  }
+  </script>
 
   <script type="module" src="app.js"></script>
 </body>
