@@ -98,7 +98,10 @@
   <!-- ═══ RECIPE DETAIL MODAL ═══ -->
   <div class="overlay" id="recipeModal">
     <div class="sheet recipe-sheet">
-      <div class="sheet__handle"></div>
+      <div class="sheet__handle" onclick="closeRecipe()"></div>
+      <div class="recipe-top-close" onclick="closeRecipe()">
+        <span>ปิด</span>
+      </div>
       <div class="recipe-image-wrap" id="recipeImageWrap">
         <img class="recipe-image" id="recipeImage" alt="">
         <button class="recipe-close" onclick="closeRecipe()">✕</button>
