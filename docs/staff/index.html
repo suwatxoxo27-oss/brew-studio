@@ -103,7 +103,7 @@
         <span>ปิด</span>
       </div>
       <div class="recipe-image-wrap" id="recipeImageWrap">
-        <img class="recipe-image" id="recipeImage" alt="" onclick="openFullImage(this.src)">
+        <img class="recipe-image" id="recipeImage" alt="">
         <button class="recipe-close" onclick="closeRecipe()">✕</button>
       </div>
       <div class="recipe-body">
@@ -138,10 +138,25 @@
     if (!src) return;
     document.getElementById('imgViewerImg').src = src;
     document.getElementById('imgViewer').classList.add('img-viewer--open');
+    document.body.style.overflow = 'hidden';
   }
   function closeFullImage() {
     document.getElementById('imgViewer').classList.remove('img-viewer--open');
+    document.body.style.overflow = '';
   }
+  // Touch-friendly: attach to recipe image after DOM ready
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('recipeImage').addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (this.src && this.src !== window.location.href) openFullImage(this.src);
+    });
+    // Also handle touch
+    document.getElementById('recipeImage').addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.src && this.src !== window.location.href) openFullImage(this.src);
+    }, {passive: false});
+  });
   </script>
 
   <script type="module" src="app.js"></script>
