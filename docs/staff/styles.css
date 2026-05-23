@@ -30,9 +30,9 @@
 
 /* Numpad */
 .numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:240px;margin:0 auto}
-.num-key{height:56px;border-radius:14px;font-size:22px;font-weight:400;font-family:var(--font-display);color:rgba(245,237,224,.85);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);transition:all .12s;position:relative;overflow:hidden}
+.num-key{height:56px;border-radius:14px;font-size:24px;font-weight:400;font-family:var(--font-display);color:rgba(245,237,224,.7);background:transparent;border:none;transition:all .12s;position:relative;overflow:hidden}
 .num-key::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(212,162,78,.12),transparent 70%);opacity:0;transition:opacity .15s}
-.num-key:active{transform:scale(.92);background:rgba(212,162,78,.08)}.num-key:active::after{opacity:1}
+.num-key:active{transform:scale(.85);color:var(--amber)}.num-key:active::after{opacity:1}
 .num-key--empty{background:transparent;border:none;pointer-events:none}
 .num-key--del{font-size:16px;color:var(--text3);background:transparent;border:none}
 
