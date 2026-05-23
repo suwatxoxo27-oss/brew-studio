@@ -12,7 +12,6 @@ import {
   addCategory, updateCategory, deleteCategory, watchCategories,
   addAccessLog, watchAccessLogs, clearAccessLogs,
 } from "../shared/db.js";
-import { uploadMenuImage, uploadLogo } from "../shared/storage.js";
 import { escapeHtml, sanitizeText, showToast, formatDateTime, isToday, isWithinDays, debounce } from "../shared/utils.js";
 
 // ══════════════════════════════════════
@@ -519,14 +518,28 @@ window.saveMenu = async function () {
   try {
     let imageUrl = "";
 
-    // Handle image
+    // Handle image — save as base64 or URL (no Storage needed)
     if (state.selectedImageFile) {
-      // Upload to storage
-      const tempId = state.editingMenuId || Date.now().toString();
-      showToast("กำลังอัปโหลดรูปภาพ...", "info");
-      imageUrl = await uploadMenuImage(state.shopId, tempId, state.selectedImageFile);
+      imageUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        const img = new Image();
+        reader.onload = (e) => {
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            let w = img.width, h = img.height;
+            if (w > 600) { h = h * (600 / w); w = 600; }
+            if (h > 800) { w = w * (800 / h); h = 800; }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL("image/jpeg", 0.7));
+          };
+          img.onerror = () => reject(new Error("Failed to load image"));
+          img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error("Failed to read file"));
+        reader.readAsDataURL(state.selectedImageFile);
+      });
     } else {
-      // Check URL input
       imageUrl = document.getElementById("imageUrl").value.trim();
     }
 
@@ -692,8 +705,24 @@ window.saveBranding = async function () {
   try {
     let logoUrl = state.shop.logoUrl || "";
     if (state.selectedLogoFile) {
-      showToast("กำลังอัปโหลดโลโก้...", "info");
-      logoUrl = await uploadLogo(state.shopId, state.selectedLogoFile);
+      logoUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        const img = new Image();
+        reader.onload = (e) => {
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            let w = img.width, h = img.height;
+            if (w > 300) { h = h * (300 / w); w = 300; }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL("image/jpeg", 0.8));
+          };
+          img.onerror = () => reject(new Error("Failed"));
+          img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error("Failed"));
+        reader.readAsDataURL(state.selectedLogoFile);
+      });
       state.selectedLogoFile = null;
     } else {
       const urlInput = document.getElementById("logoUrl").value.trim();
