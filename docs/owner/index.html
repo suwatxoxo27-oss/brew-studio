@@ -49,7 +49,7 @@
 
     <!-- Top Navigation -->
     <nav class="app-nav">
-      <div id="syncBar" class="sync-bar">
+      <div id="syncBar" class="sync-bar" style="display:none">
         <div class="sync-dot"></div>
         <span id="syncText">กำลังเชื่อมต่อ...</span>
       </div>
@@ -67,30 +67,13 @@
 
     <!-- ─── Tab: Menu ─── -->
     <div class="page page--active" id="pageMenu">
-      <!-- Staff Link Banner -->
-      <div class="staff-banner">
-        <span class="staff-banner__icon">🔗</span>
-        <div class="staff-banner__text">
-          <div class="staff-banner__title">ลิงก์สำหรับพนักงาน</div>
-          <div class="staff-banner__sub" id="staffLinkText">staff/index.html</div>
-        </div>
-        <button class="btn btn--sm" style="background:rgba(200,151,74,.2);color:var(--gold);border:1px solid rgba(200,151,74,.3)" onclick="copyStaffLink()">
-          คัดลอก
-        </button>
-      </div>
-
-      <!-- Search -->
       <div class="search-wrap">
         <div class="search-box">
-          <span class="search-icon">⌕</span>
-          <input type="text" id="searchInput" placeholder="ค้นหาเมนู…" oninput="renderMenus()">
+          <span class="search-icon">&#x2315;</span>
+          <input type="text" id="searchInput" placeholder="ค้นหาเมนู..." oninput="renderMenus()">
         </div>
       </div>
-
-      <!-- Category Tabs -->
       <div class="cat-bar" id="catBar"></div>
-
-      <!-- Menu Grid -->
       <div class="menu-section">
         <div class="menu-header">
           <div class="text-display text-display--sm" id="sectionTitle">เมนูทั้งหมด</div>
@@ -158,9 +141,9 @@
           </div>
         </section>
 
-        <!-- Staff PIN -->
+        <!-- PIN & System Settings -->
         <section class="set-section">
-          <div class="text-label">🔐 รหัสพนักงาน (PIN)</div>
+          <div class="text-label">🔐 รหัสพนักงาน</div>
           <div class="card">
             <div class="set-row">
               <div class="set-row__icon">🔑</div>
@@ -170,13 +153,26 @@
               </div>
               <button class="btn btn--secondary btn--sm" onclick="openPinModal()">เปลี่ยน</button>
             </div>
-            <div class="set-row">
-              <div class="set-row__icon">📋</div>
+          </div>
+        </section>
+
+        <section class="set-section">
+          <div class="text-label">⚙️ ระบบ</div>
+          <div class="card">
+            <div class="set-row" onclick="openSessionModal()" style="cursor:pointer">
+              <div class="set-row__icon">⏱️</div>
               <div class="set-row__body">
-                <div class="set-row__label">แชร์ PIN ให้พนักงาน</div>
-                <div class="set-row__sub text-small text-muted">คัดลอก PIN สำหรับแจก</div>
+                <div class="set-row__label">Auto-Logout</div>
+                <div class="set-row__sub text-small text-muted" id="sessionPreview">ไม่จำกัด</div>
               </div>
-              <button class="btn btn--secondary btn--sm" onclick="sharePin()">คัดลอก</button>
+              <span style="color:var(--text3)">›</span>
+            </div>
+            <div class="set-row" style="cursor:default">
+              <div class="set-row__icon" id="settingSyncIcon">🟢</div>
+              <div class="set-row__body">
+                <div class="set-row__label">สถานะการเชื่อมต่อ</div>
+                <div class="set-row__sub text-small text-muted" id="settingSyncText">เชื่อมต่อแล้ว · Realtime</div>
+              </div>
             </div>
           </div>
         </section>
@@ -353,6 +349,34 @@
           <input class="input" type="password" id="confirmPinInput" placeholder="ใส่อีกครั้ง" maxlength="8" inputmode="numeric">
         </div>
         <button class="btn btn--primary btn--full" onclick="savePin()">💾 บันทึก PIN</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Timeout Modal -->
+  <div class="overlay" id="sessionModal">
+    <div class="sheet">
+      <div class="sheet__handle"></div>
+      <div class="sheet__header">
+        <div class="sheet__title">Auto-Logout</div>
+        <button class="sheet__close" onclick="closeModal('sessionModal')">&#10005;</button>
+      </div>
+      <div class="sheet__body">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6">
+          ระบบจะล็อกหน้าจอโดยอัตโนมัติหลังจากไม่มีการใช้งานตามเวลาที่กำหนด
+        </p>
+        <div class="field">
+          <div class="field__label">เลือกเวลา</div>
+          <select class="input" id="sessionTimeSelect">
+            <option value="0">ไม่จำกัด</option>
+            <option value="5">5 นาที</option>
+            <option value="10">10 นาที</option>
+            <option value="15">15 นาที</option>
+            <option value="30">30 นาที</option>
+            <option value="60">1 ชั่วโมง</option>
+          </select>
+        </div>
+        <button class="btn btn--primary btn--full" onclick="saveSessionTimeout()">บันทึก</button>
       </div>
     </div>
   </div>

@@ -86,6 +86,7 @@ async function initApp() {
         state.menus = menus;
         renderMenus();
         updateSyncBar("connected", "เชื่อมต่อแล้ว · Realtime");
+    updateSettingSync("connected");
       })
     );
 
@@ -96,6 +97,7 @@ async function initApp() {
         renderMenus();
         renderCategoryList();
         updateSyncBar("connected", "เชื่อมต่อแล้ว · Realtime");
+    updateSettingSync("connected");
       })
     );
 
@@ -108,6 +110,7 @@ async function initApp() {
 
     // Force initial sync bar update
     updateSyncBar("connected", "เชื่อมต่อแล้ว · Realtime");
+    updateSettingSync("connected");
   } catch (err) {
     console.error("Init error:", err);
     updateSyncBar("error", "เกิดข้อผิดพลาด — กรุณาลอง refresh");
@@ -860,15 +863,73 @@ window.handleClearLogs = async function () {
 // STAFF LINK
 // ══════════════════════════════════════
 
-window.copyStaffLink = function () {
-  const base = window.location.origin + window.location.pathname.replace(/\/owner\/.*$/, '');
-  const link = `${base}/staff/index.html?shop=${state.shopId}`;
-  document.getElementById("staffLinkText").textContent = link;
-  navigator.clipboard.writeText(link).then(() => showToast("คัดลอกลิงก์แล้ว ✓")).catch(() => {
-    // Fallback for non-HTTPS
-    showToast("ลิงก์: " + link);
-  });
+// ══════════════════════════════════════
+// SESSION TIMEOUT
+// ══════════════════════════════════════
+
+let sessionTimer = null;
+
+function updateSettingSync(status) {
+  const icon = document.getElementById("settingSyncIcon");
+  const text = document.getElementById("settingSyncText");
+  if (!icon || !text) return;
+  if (status === "connected") {
+    icon.textContent = "🟢";
+    text.textContent = "เชื่อมต่อแล้ว · Realtime";
+  } else if (status === "error") {
+    icon.textContent = "🔴";
+    text.textContent = "ขาดการเชื่อมต่อ";
+  } else {
+    icon.textContent = "🟡";
+    text.textContent = "กำลังเชื่อมต่อ...";
+  }
+}
+
+window.openSessionModal = function () {
+  const saved = localStorage.getItem("brew_session_min") || "0";
+  document.getElementById("sessionTimeSelect").value = saved;
+  document.getElementById("sessionModal").classList.add("overlay--open");
 };
+
+window.saveSessionTimeout = function () {
+  const min = document.getElementById("sessionTimeSelect").value;
+  localStorage.setItem("brew_session_min", min);
+  const labels = {"0":"ไม่จำกัด","5":"5 นาที","10":"10 นาที","15":"15 นาที","30":"30 นาที","60":"1 ชั่วโมง"};
+  document.getElementById("sessionPreview").textContent = labels[min] || "ไม่จำกัด";
+  document.getElementById("sessionModal").classList.remove("overlay--open");
+  startSessionTimer();
+  showToast("บันทึกเวลาสำเร็จ ✓");
+};
+
+function startSessionTimer() {
+  if (sessionTimer) clearTimeout(sessionTimer);
+  const min = parseInt(localStorage.getItem("brew_session_min") || "0");
+  if (min <= 0) return;
+  sessionTimer = setTimeout(() => {
+    showToast("หมดเวลาใช้งาน — ออกจากระบบอัตโนมัติ", "info");
+    setTimeout(() => window.logoutOwner(), 1500);
+  }, min * 60 * 1000);
+}
+
+function resetSessionTimer() {
+  const min = parseInt(localStorage.getItem("brew_session_min") || "0");
+  if (min <= 0) return;
+  startSessionTimer();
+}
+
+// Reset timer on user activity
+["click", "touchstart", "keydown", "scroll"].forEach(ev => {
+  document.addEventListener(ev, () => resetSessionTimer(), { passive: true });
+});
+
+// Load saved session timeout on init
+(function loadSessionSetting() {
+  const min = localStorage.getItem("brew_session_min") || "0";
+  const labels = {"0":"ไม่จำกัด","5":"5 นาที","10":"10 นาที","15":"15 นาที","30":"30 นาที","60":"1 ชั่วโมง"};
+  const el = document.getElementById("sessionPreview");
+  if (el) el.textContent = labels[min] || "ไม่จำกัด";
+  startSessionTimer();
+})();
 
 // ══════════════════════════════════════
 // OVERLAY BACKDROP CLICK
