@@ -7,7 +7,6 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
-import { getStorage } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -29,7 +28,6 @@ const firebaseConfig = {
 // ── Initialize ──
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app);
 const auth = getAuth(app);
 
 // ── Auth Helpers ──
@@ -81,4 +79,4 @@ function getCurrentUser() {
   return auth.currentUser;
 }
 
-export { db, storage, auth, loginOwner, logoutOwner, onAuthChange, getCurrentUser };
+export { db, auth, loginOwner, logoutOwner, onAuthChange, getCurrentUser };
