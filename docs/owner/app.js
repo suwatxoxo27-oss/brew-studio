@@ -518,7 +518,7 @@ window.saveMenu = async function () {
   try {
     let imageUrl = "";
 
-    // Handle image — save as base64 or URL (no Storage needed)
+    // Handle image — compress to base64 (max ~400KB for Firestore)
     if (state.selectedImageFile) {
       imageUrl = await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -527,16 +527,21 @@ window.saveMenu = async function () {
           img.onload = () => {
             const canvas = document.createElement("canvas");
             let w = img.width, h = img.height;
-            if (w > 600) { h = h * (600 / w); w = 600; }
-            if (h > 800) { w = w * (800 / h); h = 800; }
+            const MAX = 480;
+            if (w > h) { if (w > MAX) { h = h * (MAX / w); w = MAX; } }
+            else { if (h > MAX) { w = w * (MAX / h); h = MAX; } }
             canvas.width = w; canvas.height = h;
             canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-            resolve(canvas.toDataURL("image/jpeg", 0.7));
+            // Try decreasing quality until under 400KB
+            let q = 0.65, result;
+            do { result = canvas.toDataURL("image/jpeg", q); q -= 0.1; }
+            while (result.length > 400000 && q > 0.2);
+            resolve(result);
           };
-          img.onerror = () => reject(new Error("Failed to load image"));
+          img.onerror = () => reject(new Error("โหลดรูปไม่สำเร็จ"));
           img.src = e.target.result;
         };
-        reader.onerror = () => reject(new Error("Failed to read file"));
+        reader.onerror = () => reject(new Error("อ่านไฟล์ไม่สำเร็จ"));
         reader.readAsDataURL(state.selectedImageFile);
       });
     } else {
